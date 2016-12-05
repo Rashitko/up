@@ -11,16 +11,15 @@ from up.utils.up_logger import UpLogger
 
 
 class UpLoader:
-    MODULES_PATH = '../../modules/'
-    MODULES_MODULE_PREFIX = 'new_raspilot.modules.'
 
-    RECORDERS_PATH = '../../recorders/'
-    RECORDERS_MODULE_PREFIX = 'new_raspilot.recorders.'
-
-    FLIGHT_CONTROLLER_PATH = '../../flight_controller/'
-    FLIGHT_CONTROLLER_MODULE_PREFIX = 'new_raspilot.flight_controller.'
-
-    def __init__(self):
+    def __init__(self, modules_path, modules_prefix, recorders_path, recorders_prefix, flight_controller_path,
+                 flight_controller_prefix):
+        self.__flight_controller_prefix = flight_controller_prefix
+        self.__flight_controller_path = flight_controller_path
+        self.__recorders_prefix = recorders_prefix
+        self.__recorders_path = recorders_path
+        self.__modules_prefix = modules_prefix
+        self.__modules_path = modules_path
         self.__logger = UpLogger.get_logger()
         self.__load_strategy = BaseModuleLoadStrategy()
 
@@ -52,17 +51,17 @@ class UpLoader:
         if not modules_folder:
             return None
         raspilot_modules = []
-        self.__load_modules(UpLoader.MODULES_MODULE_PREFIX, modules_folder, raspilot_modules,
+        self.__load_modules(self.__modules_prefix, modules_folder, raspilot_modules,
                             self.__module_module_filter, self.__load_strategy)
         recorders_folder = self.__get_recorders_folder()
         if not recorders_folder:
             return None
         raspilot_recorders = []
-        self.__load_modules(UpLoader.RECORDERS_MODULE_PREFIX, recorders_folder, raspilot_recorders,
+        self.__load_modules(self.__recorders_prefix, recorders_folder, raspilot_recorders,
                             self.__recorders_filter, self.__load_strategy)
         flight_controller_folder = self.__get_flight_controller_folder()
         flight_controllers = []
-        self.__load_modules(UpLoader.FLIGHT_CONTROLLER_MODULE_PREFIX, flight_controller_folder,
+        self.__load_modules(self.__flight_controller_prefix, flight_controller_folder,
                             flight_controllers, self.__flight_controller_filter, self.__load_strategy)
         if flight_controllers:
             if len(flight_controllers) > 1:
@@ -124,7 +123,7 @@ class UpLoader:
         :return: string path to the modules folder, or None if the folder was newly created
         :rtype: str
         """
-        modules_path = os.path.join(os.path.dirname(__file__), UpLoader.MODULES_PATH)
+        modules_path = os.path.join(os.path.dirname(__file__), self.__modules_path)
         modules_path = os.path.abspath(modules_path)
         self.__logger.debug('Looking for modules in {}'.format(modules_path))
         if not os.path.exists(modules_path):
@@ -139,7 +138,7 @@ class UpLoader:
         :return: string path to the modules folder, or None if the folder was newly created
         :rtype: str
         """
-        modules_path = os.path.join(os.path.dirname(__file__), UpLoader.RECORDERS_PATH)
+        modules_path = os.path.join(os.path.dirname(__file__), self.__recorders_path)
         modules_path = os.path.abspath(modules_path)
         self.__logger.debug('Looking for recorders in {}'.format(modules_path))
         if not os.path.exists(modules_path):
@@ -154,7 +153,7 @@ class UpLoader:
         :return: string path to the modules folder, or None if the folder was newly created
         :rtype: str
         """
-        modules_path = os.path.join(os.path.dirname(__file__), UpLoader.FLIGHT_CONTROLLER_PATH)
+        modules_path = os.path.join(os.path.dirname(__file__), self.__flight_controller_path)
         modules_path = os.path.abspath(modules_path)
         self.__logger.debug('Looking for flight controller in {}'.format(modules_path))
         if not os.path.exists(modules_path):
@@ -164,8 +163,3 @@ class UpLoader:
             os.makedirs(modules_path)
             return None
         return modules_path
-
-
-if __name__ == '__main__':
-    loader = UpLoader()
-    loader.create()

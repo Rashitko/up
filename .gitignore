@@ -1,3 +1,4 @@
 build/
+up/config/*
 .idea/
 **/*.pyc

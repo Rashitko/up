@@ -1,3 +1,4 @@
+import os
 from distutils.core import setup
 
 setup(
@@ -9,5 +10,6 @@ setup(
     author='Michal Raška',
     author_email='michal.raska@gmail.com',
     description='',
-    requires=['twisted', 'colorlog', 'psutil', 'pyserial']
+    requires=['twisted', 'colorlog', 'psutil', 'pyserial'],
+    data_files=[(os.path.expanduser('~') + '/.up/config/', ['up/config/config.cfg', 'up/config/modules.cfg'])]
 )
