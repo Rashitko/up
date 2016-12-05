@@ -3,11 +3,11 @@ from distutils.core import setup
 setup(
     name='up',
     version='0.5',
-    packages=['', 'utils', 'commands', 'providers', 'flight_controller'],
+    packages=['up', 'up.utils', 'up.commands', 'up.providers', 'up.flight_controller'],
     url='',
-    license='MIT',
-    author='michal',
+    license='',
+    author='Michal Raška',
     author_email='michal.raska@gmail.com',
-    description='Up is the modular framework for creating autopilot systems.',
-    requires=['twisted', 'colorlog', 'pyserial', 'psutil']
+    description='',
+    requires=['twisted', 'colorlog', 'psutil', 'pyserial']
 )

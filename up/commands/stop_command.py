@@ -1,7 +1,7 @@
 import os
 import signal
 
-from commands.command import BaseCommand, BaseCommandHandler
+from up.commands.command import BaseCommand, BaseCommandHandler
 
 
 class BaseStopCommand(BaseCommand):

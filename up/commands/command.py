@@ -2,7 +2,7 @@ import json
 import uuid
 from abc import abstractmethod
 
-from utils.up_logger import UpLogger
+from up.utils.up_logger import UpLogger
 
 
 class BaseCommand:

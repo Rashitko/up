@@ -1,6 +1,6 @@
-from base_thread_module import BaseThreadModule
-from providers.base_rx_provider import BaseRXProvider
-from providers.orientation_provider import BaseOrientationProvider
+from up.base_thread_module import BaseThreadModule
+from up.providers.base_rx_provider import BaseRXProvider
+from up.providers.orientation_provider import BaseOrientationProvider
 
 
 class BaseFlightController(BaseThreadModule):

@@ -6,7 +6,7 @@ import sys
 
 from colorlog import ColoredFormatter
 
-from utils.config_reader import ConfigReader
+from up.utils.config_reader import ConfigReader
 
 
 class UpLogger:

@@ -1,16 +1,16 @@
 from twisted.internet import reactor
 
-from base_started_module import BaseStartedModule
-from commands.command_executor import CommandExecutor
-from commands.command_receiver import CommandReceiver
-from commands.stop_command import BaseStopCommand, BaseStopCommandHandler
-from providers.base_rx_provider import BaseRXProvider
-from providers.black_box_controller import BaseBlackBoxStateRecorder, BlackBoxController
-from providers.load_guard_controller import LoadGuardController, BaseLoadGuardStateRecorder
-from providers.mission_control_provider import BaseMissionControlProvider
-from providers.orientation_provider import BaseOrientationProvider
-from providers.telemetry_controller import BaseTelemetryStateRecorder, TelemetryController
-from utils.up_logger import UpLogger
+from up.base_started_module import BaseStartedModule
+from up.commands.command_executor import CommandExecutor
+from up.commands.command_receiver import CommandReceiver
+from up.commands.stop_command import BaseStopCommand, BaseStopCommandHandler
+from up.providers.base_rx_provider import BaseRXProvider
+from up.providers.black_box_controller import BaseBlackBoxStateRecorder, BlackBoxController
+from up.providers.load_guard_controller import LoadGuardController, BaseLoadGuardStateRecorder
+from up.providers.mission_control_provider import BaseMissionControlProvider
+from up.providers.orientation_provider import BaseOrientationProvider
+from up.providers.telemetry_controller import BaseTelemetryStateRecorder, TelemetryController
+from up.utils.up_logger import UpLogger
 
 
 class Up:

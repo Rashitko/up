@@ -1,6 +1,6 @@
 from abc import ABCMeta
 
-from utils.up_logger import UpLogger
+from up.utils.up_logger import UpLogger
 
 
 class BaseModule(metaclass=ABCMeta):

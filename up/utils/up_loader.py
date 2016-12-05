@@ -2,13 +2,12 @@ import importlib
 import inspect
 import os
 
-from base_module import BaseModule
-from base_system_state_recorder import BaseSystemStateRecorder
-from flight_controller.base_flight_controller import BaseFlightController
-from utils.base_module_load_strategy import BaseModuleLoadStrategy
-from utils.up_logger import UpLogger
-
-from up import Up
+from up.base_module import BaseModule
+from up.base_system_state_recorder import BaseSystemStateRecorder
+from up.flight_controller.base_flight_controller import BaseFlightController
+from up.up import Up
+from up.utils.base_module_load_strategy import BaseModuleLoadStrategy
+from up.utils.up_logger import UpLogger
 
 
 class UpLoader:

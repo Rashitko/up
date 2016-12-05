@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-from base_module import BaseModule
-from utils.up_logger import UpLogger
+from up.base_module import BaseModule
+from up.utils.up_logger import UpLogger
 
 
 class BaseStartedModule(BaseModule):

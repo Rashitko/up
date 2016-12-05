@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from base_module import BaseModule
+from up.base_module import BaseModule
 
 
 class BaseSystemStateRecorder(BaseModule):

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from base_started_module import BaseStartedModule
+from up.base_started_module import BaseStartedModule
 
 
 class BaseLocationProvider(BaseStartedModule):

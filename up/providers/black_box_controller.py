@@ -1,7 +1,7 @@
 import time
 
-from base_system_state_recorder import BaseSystemStateRecorder
-from base_thread_module import BaseThreadModule
+from up.base_system_state_recorder import BaseSystemStateRecorder
+from up.base_thread_module import BaseThreadModule
 
 
 class BlackBoxController(BaseThreadModule):
