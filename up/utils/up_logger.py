@@ -13,7 +13,6 @@ class UpLogger:
     LOGGER_NAME = 'raspilot.log'
     TRANSMISSION_LEVEL_NUM = 9
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-    PATH = os.path.expanduser('~') + '/up/logs/'
 
     initialized = False
 
@@ -22,12 +21,13 @@ class UpLogger:
         configparser.ConfigParser()
         cfg = ConfigReader.instance().global_config
         log_level = cfg['DEFAULT']['LOG LEVEL']
+        log_path = cfg['DEFAULT']['LOG PATH']
 
         logging.addLevelName(UpLogger.TRANSMISSION_LEVEL_NUM, "TRANSMISSION")
         logger = logging.getLogger(UpLogger.LOGGER_NAME)
         logger.setLevel(log_level)
         dir = os.path.dirname(__file__)
-        path = os.path.join(dir, UpLogger.PATH)
+        path = os.path.join(dir, log_path)
         if not os.path.exists(path):
             os.makedirs(path)
         fh = logging.FileHandler("{}{}-{}.log".format(path, UpLogger.LOGGER_NAME,
