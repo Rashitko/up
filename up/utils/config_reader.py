@@ -5,8 +5,8 @@ from up.utils.singleton import Singleton
 
 
 class ConfigReader(metaclass=Singleton):
-    MODULES_CONFIG_PATH = os.path.expanduser('~') + '/.up/config/modules.cfg'
-    GLOBAL_CONFIG_PATH = os.path.expanduser('~') + '/.up/config/config.cfg'
+    MODULES_CONFIG_PATH = os.path.expanduser('~') + '/up/config/modules.cfg'
+    GLOBAL_CONFIG_PATH = os.path.expanduser('~') + '/up/config/config.cfg'
 
     def __init__(self):
         current_path = os.path.dirname(__file__)
