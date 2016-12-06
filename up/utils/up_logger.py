@@ -26,10 +26,14 @@ class UpLogger:
         logging.addLevelName(UpLogger.TRANSMISSION_LEVEL_NUM, "TRANSMISSION")
         logger = logging.getLogger(UpLogger.LOGGER_NAME)
         logger.setLevel(log_level)
-        dir = os.path.dirname(__file__)
-        path = os.path.join(dir, log_path)
+
+        path = os.path.abspath(log_path)
+        if '~' in path:
+            path = os.path.join(os.path.expanduser(path[path.index('~'):]))
         if not os.path.exists(path):
             os.makedirs(path)
+        if not path.endswith('/'):
+            path += '/'
         fh = logging.FileHandler("{}{}-{}.log".format(path, UpLogger.LOGGER_NAME,
                                                       datetime.datetime.now().strftime("%Y-%m-%d")))
         fh.setLevel(log_level)
