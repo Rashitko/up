@@ -1,4 +1,6 @@
 build/
+up.egg-info
+dist/
 up/config/*
 .idea/
 **/*.pyc
