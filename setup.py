@@ -1,5 +1,5 @@
 import os
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='up',
@@ -10,6 +10,6 @@ setup(
     author='Michal Raška',
     author_email='michal.raska@gmail.com',
     description='',
-    requires=['twisted', 'colorlog', 'psutil', 'pyserial'],
+    install_requires=['twisted', 'colorlog', 'psutil'],
     data_files=[(os.path.expanduser('~') + '/up/config/', ['up/config/config.cfg', 'up/config/modules.cfg'])]
 )
