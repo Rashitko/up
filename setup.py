@@ -7,7 +7,7 @@ setup(
     packages=['up', 'up.utils', 'up.commands', 'up.providers', 'up.flight_controller'],
     url='',
     license='',
-    author='Michal Raška',
+    author='Michal Raska',
     author_email='michal.raska@gmail.com',
     description='',
     install_requires=['twisted', 'colorlog', 'psutil'],

@@ -7,6 +7,7 @@ import sys
 from colorlog import ColoredFormatter
 
 from up.utils.config_reader import ConfigReader
+from up.utils.path_utils import PathUtils
 
 
 class UpLogger:
@@ -28,8 +29,7 @@ class UpLogger:
         logger.setLevel(log_level)
 
         path = os.path.abspath(log_path)
-        if '~' in path:
-            path = os.path.join(os.path.expanduser(path[path.index('~'):]))
+        path = PathUtils.expand_user(path)
         if not os.path.exists(path):
             os.makedirs(path)
         if not path.endswith('/'):
