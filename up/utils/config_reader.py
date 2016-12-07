@@ -29,6 +29,10 @@ class ConfigReader(metaclass=Singleton):
     def global_config(self):
         return self.__global_config
 
+    @property
+    def global_config_path(self):
+        return self.__global_config_path
+
     @staticmethod
     def instance():
         return ConfigReader()
