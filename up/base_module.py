@@ -11,6 +11,15 @@ class BaseModule(metaclass=ABCMeta):
 
     def initialize(self, raspilot):
         self.__raspilot = raspilot
+        self._log_debug("Initializing {}".format(self.class_name))
+        self._execute_initialization()
+
+    def _execute_initialization(self):
+        """
+        Subclasses must override this method. Initialize the provider here.
+        :return: None
+        """
+        pass
 
     def _log_debug(self, message):
         if not self.__silent:

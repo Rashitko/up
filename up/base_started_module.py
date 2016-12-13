@@ -11,23 +11,6 @@ class BaseStartedModule(BaseModule):
         self.__logger = UpLogger.get_logger()
         self.__started = False
 
-    def initialize(self, raspilot):
-        """
-        Called once, use for one time initialization
-        :param raspilot: raspilot instance
-        :return: None
-        """
-        super().initialize(raspilot)
-        self._log_debug("Initializing {}".format(self.class_name))
-        self._execute_initialization()
-
-    def _execute_initialization(self):
-        """
-        Subclasses must override this method. Initialize the provider here.
-        :return: None
-        """
-        pass
-
     def start(self):
         """
         Called by the Raspilot after initialization, used to start the provider.
