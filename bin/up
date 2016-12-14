@@ -1,0 +1,226 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import re
+from string import Template
+
+CREATOR = "create"
+CREATOR_SHORT = 'c'
+CREATOR_ACTIONS = [CREATOR, CREATOR_SHORT]
+
+MODULE = 'module'
+MODULE_SHORT = 'm'
+
+HANDLER = 'handler'
+HANDLER_SHORT = 'h'
+
+NEW_APP = 'new'
+NEW_APP_SHORT = 'n'
+
+START = 'start'
+START_SHORT = 's'
+
+NAME_SWITCH = '-n'
+NAME_LONG_SWITCH = '--name'
+
+IDENTIFIER_SWITCH = '-i'
+IDENTIFIER_LONG_SWITCH = '--identifier'
+
+HANDLER_CREATORS = [HANDLER, HANDLER_SHORT]
+MODULES_CREATORS = [MODULE, MODULE_SHORT]
+NEW_APP_CREATORS = [NEW_APP, NEW_APP_SHORT]
+START_ACTIONS = [START, START_SHORT]
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file', type=str, default=None)
+subparsers = parser.add_subparsers(title='Available actions', help='generates a thing', dest='action')
+
+generate_parser = subparsers.add_parser(CREATOR, aliases=[CREATOR_SHORT])
+start_parser = subparsers.add_parser(START, aliases=[START_SHORT])
+
+l2_parsers = generate_parser.add_subparsers(title='Creators', help='available creators', dest='creator')
+
+handler_parser = l2_parsers.add_parser(HANDLER, aliases=[HANDLER_SHORT])
+handler_parser.add_argument(IDENTIFIER_SWITCH, IDENTIFIER_LONG_SWITCH, type=str, required=True)
+handler_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+
+modules_parser = l2_parsers.add_parser(MODULE, aliases=[MODULE_SHORT])
+modules_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+
+new_app_parser = l2_parsers.add_parser(NEW_APP, aliases=[NEW_APP_SHORT])
+new_app_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+
+
+def create_command_handler(path, name, identifier):
+    source_template = """from up.commands.command import BaseCommand, BaseCommandHandler
+
+
+class ${name}Command(BaseCommand):
+    NAME = '$identifier'
+
+    def __init__(self):
+        super().__init__(${name}Command.NAME)
+
+
+class ${name}CommandHandler(BaseCommandHandler):
+    def __init__(self):
+        super().__init__()
+
+    def run_action(self, command):
+        if command is None:
+            return None
+"""
+    source = Template(source_template).substitute(name=name, identifier=identifier)
+    f = open(path, 'w+')
+    f.write(source)
+    f.close()
+
+
+def create_module(path, name):
+    source_template = """from up.base_started_module import BaseStartedModule
+
+
+class ${name}(BaseStartedModule):
+    def __init__(self):
+        super().__init__()
+
+    def _execute_initialization(self):
+        pass
+
+    def _execute_start(self):
+        return True
+
+    def _execute_stop(self):
+        pass
+
+    def load(self):
+        return True
+"""
+    source = Template(source_template).substitute(name=name)
+    f = open(path, 'w+')
+    f.write(source)
+    f.close()
+
+
+def create_app(name):
+    cwd = os.getcwd()
+    dest_dir = os.path.join(cwd, name)
+    print("Using New App Generator")
+    print("\t Path: %s" % dest_dir)
+    if os.path.isdir(dest_dir):
+        confirmation = None
+        while confirmation not in ['y', 'n', 'c']:
+            confirmation = input("Directory already exists. Proceed anyway? (y - yes | n - no | c - cancel) ")
+            if confirmation in ['c', 'n']:
+                exit(1)
+    os.makedirs(dest_dir, exist_ok=True)
+    touch(dest_dir, 'UpFile')
+    touch(dest_dir, 'main.py')
+    source_template = """import os
+from up.utils.up_loader import UpLoader
+
+def main():
+  cwd = os.getcwd()
+  modules_path = os.path.join(cwd, 'modules')
+  recorders_path = os.path.join(cwd, 'recorders')
+  fc_path = os.path.join(cwd, 'flight_controller')
+  up = UpLoader(modules_path=modules_path, modules_prefix='modules',
+                recorders_path=recorders_path, recorders_prefix='recorders',
+                flight_controller_path=fc_path, flight_controller_prefix='flight_controller'
+                ).create()
+  try:
+    up.initialize()
+    up.run()
+  finally:
+    up.stop()
+
+if __name__ == "__main__":
+  main()"""
+    source = Template(source_template).substitute()
+    f = open(os.path.join(dest_dir, 'main.py'), 'w')
+    f.write(source)
+    f.close()
+    touch(dest_dir, '__init__.py')
+
+    create_sub_dir(dest_dir, 'modules')
+    create_sub_dir(dest_dir, 'commands')
+    create_sub_dir(dest_dir, 'recorders')
+    create_sub_dir(dest_dir, 'flight_controller')
+    create_sub_dir(dest_dir, 'logs', create_init=False)
+
+
+def touch(dest, name):
+    open(os.path.join(dest, name), 'w+').close()
+
+
+def create_sub_dir(root, name, create_init=True):
+    new_dir = os.path.join(root, name)
+    os.makedirs(os.path.join(root, name), exist_ok=True)
+    if create_init:
+        touch(new_dir, '__init__.py')
+
+
+def to_snake_case(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+args = parser.parse_args()
+action = args.action
+if action in CREATOR_ACTIONS:
+    creator = args.creator
+    if creator in HANDLER_CREATORS:
+        name = args.name
+        if args.file is None:
+            args.file = './commands/%s_command_handler.py' % to_snake_case(name)
+        path = os.path.abspath(args.file)
+        identifier = args.identifier
+        print("Using Command Handler Generator")
+        print("\t Name: %s" % name)
+        print("\t Identifier: %s" % identifier)
+        print("\t Path: %s" % path)
+        if os.path.isfile(path):
+            confirmation = None
+            while confirmation not in ['y', 'n', 'c']:
+                confirmation = input("File already exists. Overwrite? (y - yes | n - no | c - cancel) ")
+            if confirmation in ['c', 'n']:
+                exit()
+            if confirmation in ['y']:
+                print("\t Overwrite confirmed!")
+        create_command_handler(path, name, identifier)
+    elif creator in MODULES_CREATORS:
+        name = args.name
+        if args.file is None:
+            args.file = './modules/%s_module.py' % to_snake_case(name)
+        path = os.path.abspath(args.file)
+        print("Using Modules Generator")
+        print("\t Name: %s" % name)
+        print("\t Path: %s" % path)
+        if os.path.isfile(path):
+            confirmation = None
+            while confirmation not in ['y', 'n', 'c']:
+                confirmation = input("File already exists. Overwrite? (y - yes | n - no | c - cancel) ")
+            if confirmation in ['c', 'n']:
+                exit()
+            if confirmation in ['y']:
+                print("\t Overwrite confirmed!")
+        create_module(path, name)
+    elif creator in NEW_APP_CREATORS:
+        name = args.name
+        create_app(name)
+    else:
+        generate_parser.print_help()
+        exit(1)
+elif action in START_ACTIONS:
+    cwd = os.getcwd()
+    if not os.path.isfile(os.path.join(cwd, 'UpFile')):
+        print("Not the Up Application. UpFile is missing. To generate new app use up generate new -n NAME_OF_APP")
+        exit(1)
+    # subprocess.Popen('python3' + os.path.join(cwd, 'main.py'))
+    os.system('python3 %s' % os.path.join(cwd, 'main.py'))
+elif action is None:
+    parser.print_help()
+    exit(1)
+else:
+    print("Action %s not supported" % action)

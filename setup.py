@@ -11,5 +11,6 @@ setup(
     author_email='michal.raska@gmail.com',
     description='',
     install_requires=['twisted', 'colorlog', 'psutil'],
-    data_files=[(os.path.expanduser('~') + '/up/config/', ['up/config/config.cfg', 'up/config/modules.cfg'])]
+    data_files=[(os.path.expanduser('~') + '/up/config/', ['up/config/config.cfg', 'up/config/modules.cfg'])],
+    scripts=['bin/up']
 )
