@@ -14,5 +14,5 @@ class BaseStopCommand(BaseCommand):
 
 class BaseStopCommandHandler(BaseCommandHandler):
     def run_action(self, command):
-        self.logger.info("Stop command received. Stopping Raspilot")
+        self.logger.info("Stop command received. Stopping Up")
         os.kill(os.getpid(), signal.SIGINT)

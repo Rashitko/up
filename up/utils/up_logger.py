@@ -11,7 +11,7 @@ from up.utils.path_utils import PathUtils
 
 
 class UpLogger:
-    LOGGER_NAME = 'up.log'
+    LOGGER_NAME = 'up-log'
     TRANSMISSION_LEVEL_NUM = 9
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 

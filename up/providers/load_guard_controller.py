@@ -10,9 +10,9 @@ class LoadGuardController(BaseThreadModule):
         self.__delay = delay
         self.__load_guard = load_guard
 
-    def initialize(self, raspilot):
-        super().initialize(raspilot)
-        self.__load_guard.initialize(raspilot)
+    def initialize(self, up):
+        super().initialize(up)
+        self.__load_guard.initialize(up)
 
     def _notify_loop(self):
         while self._run:

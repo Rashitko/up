@@ -7,10 +7,10 @@ class BaseModule(metaclass=ABCMeta):
     def __init__(self, silent=False):
         self.__silent = silent
         self.__logger = UpLogger.get_logger()
-        self.__raspilot = None
+        self.__up = None
 
-    def initialize(self, raspilot):
-        self.__raspilot = raspilot
+    def initialize(self, up):
+        self.__up = up
         self._log_debug("Initializing {}".format(self.class_name))
         self._execute_initialization()
 
@@ -57,5 +57,5 @@ class BaseModule(metaclass=ABCMeta):
         return self.__class__.__name__
 
     @property
-    def raspilot(self):
-        return self.__raspilot
+    def up(self):
+        return self.__up

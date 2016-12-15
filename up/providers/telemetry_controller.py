@@ -12,9 +12,9 @@ class TelemetryController(BaseThreadModule):
         self.__state_recorder = state_recorder
         self.__delay = self.DEFAULT_DELAY
 
-    def initialize(self, raspilot):
-        super().initialize(raspilot)
-        self.__state_recorder.initialize(raspilot)
+    def initialize(self, up):
+        super().initialize(up)
+        self.__state_recorder.initialize(up)
 
     def _notify_loop(self):
         while self._run:

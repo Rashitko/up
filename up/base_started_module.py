@@ -13,7 +13,7 @@ class BaseStartedModule(BaseModule):
 
     def start(self):
         """
-        Called by the Raspilot after initialization, used to start the provider.
+        Called by the up after initialization, used to start the provider.
         :return: True if the provided started successfully, False otherwise
         """
         try:

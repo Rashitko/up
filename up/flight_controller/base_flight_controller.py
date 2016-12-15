@@ -6,9 +6,9 @@ from up.providers.orientation_provider import BaseOrientationProvider
 class BaseFlightController(BaseThreadModule):
     def _execute_initialization(self):
         super()._execute_initialization()
-        if not self.raspilot.rx_provider:
+        if not self.up.rx_provider:
             raise ValueError("Flight Controller cannot be used without RX Provider")
-        if not self.raspilot.orientation_provider:
+        if not self.up.orientation_provider:
             raise ValueError("Flight Controller cannot be used without Orientation Provider")
 
     def _execute_start(self):
@@ -20,8 +20,8 @@ class BaseFlightController(BaseThreadModule):
 
     @property
     def _rx_provider(self) -> BaseRXProvider:
-        return self.raspilot.rx_provider
+        return self.up.rx_provider
 
     @property
     def _orientation_provider(self) -> BaseOrientationProvider:
-        return self.raspilot.orientation_provider
+        return self.up.orientation_provider
