@@ -14,7 +14,7 @@ class LoadGuardController(BaseThreadModule):
         super().initialize(up)
         self.__load_guard.initialize(up)
 
-    def _notify_loop(self):
+    def _loop(self):
         while self._run:
             try:
                 self.__load_guard.record_state()

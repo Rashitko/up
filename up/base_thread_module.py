@@ -10,7 +10,7 @@ class BaseThreadModule(BaseStartedModule):
         self.__thread = None
 
     def _execute_initialization(self):
-        self.__thread = Thread(target=self._notify_loop)
+        self.__thread = Thread(target=self._loop)
 
     def _execute_start(self):
         self.__run = True
@@ -21,7 +21,7 @@ class BaseThreadModule(BaseStartedModule):
         self.__run = False
 
     @abstractmethod
-    def _notify_loop(self):
+    def _loop(self):
         pass
 
     @property
