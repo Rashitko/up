@@ -11,7 +11,7 @@ from up.utils.path_utils import PathUtils
 
 
 class UpLogger:
-    LOGGER_NAME = 'raspilot.log'
+    LOGGER_NAME = 'up.log'
     TRANSMISSION_LEVEL_NUM = 9
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -22,7 +22,7 @@ class UpLogger:
         configparser.ConfigParser()
         cfg = ConfigReader.instance().global_config
         log_level = cfg['DEFAULT']['LOG LEVEL']
-        log_path = cfg['DEFAULT']['LOG PATH']
+        log_path = os.path.join(os.getcwd(), 'logs')
 
         logging.addLevelName(UpLogger.TRANSMISSION_LEVEL_NUM, "TRANSMISSION")
         logger = logging.getLogger(UpLogger.LOGGER_NAME)
