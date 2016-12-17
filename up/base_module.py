@@ -59,3 +59,7 @@ class BaseModule(metaclass=ABCMeta):
     @property
     def up(self):
         return self.__up
+
+    @classmethod
+    def instance(cls, up):
+        up.get_module(cls)
