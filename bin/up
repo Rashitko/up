@@ -67,7 +67,7 @@ def create_module(path, name, module_type):
     source_template = """from up.base_${module_type}_module import Base${module_type_cap}Module
 
 
-class ${name}(Base${module_type_cap}Module):
+class ${name}Module(Base${module_type_cap}Module):
     def __init__(self):
         super().__init__()
 
@@ -80,7 +80,6 @@ class ${name}(Base${module_type_cap}Module):
 
     def _execute_stop(self):
         super()._execute_stop()
-        pass
 """
     if module_type == 'thread':
         source_template += """
