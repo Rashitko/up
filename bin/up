@@ -263,6 +263,7 @@ def main():
     elif action is None:
         parser.print_help()
         exit(1)
+
     else:
         print("Action %s not supported" % action)
 
