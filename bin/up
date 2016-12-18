@@ -5,6 +5,8 @@ import os
 import re
 from string import Template
 
+GIT_URL = 'git+git://github.com/Rashitko/up'
+
 CREATOR = "create"
 CREATOR_SHORT = 'c'
 CREATOR_ACTIONS = [CREATOR, CREATOR_SHORT]
@@ -21,6 +23,9 @@ NEW_APP_SHORT = 'n'
 START = 'start'
 START_SHORT = 's'
 
+UPDATE = 'update'
+UPDATE_SHORT = 'u'
+
 NAME_SWITCH = '-n'
 NAME_LONG_SWITCH = '--name'
 
@@ -36,6 +41,7 @@ HANDLER_CREATORS = [HANDLER, HANDLER_SHORT]
 MODULES_CREATORS = [MODULE, MODULE_SHORT]
 NEW_APP_CREATORS = [NEW_APP, NEW_APP_SHORT]
 START_ACTIONS = [START, START_SHORT]
+UPDATE_ACTIONS = [UPDATE, UPDATE_SHORT]
 
 
 def create_command_handler(path, name, identifier):
@@ -181,7 +187,8 @@ def main():
     subparsers = parser.add_subparsers(title='Available actions', help='generates a thing', dest='action')
 
     generate_parser = subparsers.add_parser(CREATOR, aliases=[CREATOR_SHORT])
-    start_parser = subparsers.add_parser(START, aliases=[START_SHORT])
+    subparsers.add_parser(START, aliases=[START_SHORT])
+    subparsers.add_parser(UPDATE, aliases=[UPDATE_SHORT])
 
     l2_parsers = generate_parser.add_subparsers(title='Creators', help='available creators', dest='creator')
 
@@ -251,6 +258,8 @@ def main():
             print("Not the Up Application. UpFile is missing. To generate new app use up generate new -n NAME_OF_APP")
             exit(1)
         os.system('PYTHONPATH=%s python3 %s' % (cwd, os.path.join(cwd, 'main.py')))
+    elif action in UPDATE_ACTIONS:
+        os.system('pip install --upgrade %s' % GIT_URL)
     elif action is None:
         parser.print_help()
         exit(1)
