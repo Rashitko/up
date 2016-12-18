@@ -31,6 +31,7 @@ class TelemetryController(BaseThreadModule):
     @delay.setter
     def delay(self, value):
         self.__delay = value
+        self.logger.debug('Telemetry frequency set to %ss' % value)
 
 
 class BaseTelemetryStateRecorder(BaseSystemStateRecorder):

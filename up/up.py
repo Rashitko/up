@@ -18,25 +18,13 @@ class Up:
         self.__logger = UpLogger.get_logger()
         self.__modules = modules
         self.__started_modules = []
-        self.__command_receiver = CommandReceiver()
-        self.__modules.append(self.__command_receiver)
-        self.__command_executor = CommandExecutor()
-        self.__modules.append(self.__command_executor)
-        self.__flight_controller = flight_controller
-        self.__modules.append(self.__flight_controller)
+
         self.__orientation_provider = None
         self.__flight_control_provider = None
         self._rx_provider = None
         for module in self.__modules:
             if issubclass(type(module), BaseStartedModule):
                 self.__started_modules.append(module)
-            if issubclass(type(module), CommandReceiver):
-                self.__command_receiver = module
-                self.__logger.debug("Command Receiver loaded")
-            if issubclass(type(module), CommandExecutor):
-                self.__command_executor = module
-                self.__logger.debug("Command Executor loaded")
-            if issubclass(type(module), BaseOrientationProvider):
                 self.__orientation_provider = module
                 self.__logger.debug("Orientation Provider loaded")
             if issubclass(type(module), BaseMissionControlProvider):
@@ -64,8 +52,18 @@ class Up:
                 self.__modules.append(self.__load_guard_controller)
                 self.__started_modules.append(self.__load_guard_controller)
                 self.__logger.debug("Load Guard Controller loaded")
+
+        self.__flight_controller = flight_controller
+        if self.__flight_controller:
+            self.__modules.append(self.__flight_controller)
         if self.__flight_controller is None:
             self.__logger.info("Flight Controller unavailable")
+
+        self.__command_receiver = CommandReceiver()
+        self.__modules.append(self.__command_receiver)
+
+        self.__command_executor = CommandExecutor()
+        self.__modules.append(self.__command_executor)
         self.__register_commands()
 
     def __register_commands(self):

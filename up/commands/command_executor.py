@@ -1,4 +1,7 @@
 import uuid
+from queue import Queue
+
+from twisted.internet import reactor
 
 from up.base_module import BaseModule
 
@@ -7,6 +10,7 @@ class CommandExecutor(BaseModule):
     def __init__(self):
         super().__init__()
         self.__handlers = {}
+        self.__queue = Queue()
 
     def register_command(self, name, handler):
         handle = uuid.uuid1()
@@ -26,9 +30,10 @@ class CommandExecutor(BaseModule):
         self.__handlers[command_name] = None
 
     def execute_command(self, command):
-        handlers = self.__handlers.get(command.name, None)
-        if handlers:
-            for handler in handlers.values():
-                handler.run_action(command)
-        else:
-            self._log_warning("Unknown command {} received".format(command.name))
+        if command is not None:
+            handlers = self.__handlers.get(command.name, None)
+            if handlers:
+                for handler in handlers.values():
+                    reactor.callFromThread(handler.run_action, command)
+            else:
+                self._log_warning("Unknown command {} received".format(command.name))
