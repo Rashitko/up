@@ -259,11 +259,10 @@ def main():
             exit(1)
         os.system('PYTHONPATH=%s python3 %s' % (cwd, os.path.join(cwd, 'main.py')))
     elif action in UPDATE_ACTIONS:
-        os.system('pip install %s' % GIT_URL)
+        os.system('pip install --upgrade %s' % GIT_URL)
     elif action is None:
         parser.print_help()
         exit(1)
-
     else:
         print("Action %s not supported" % action)
 
