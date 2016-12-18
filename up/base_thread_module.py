@@ -10,7 +10,7 @@ class BaseThreadModule(BaseStartedModule):
         self.__thread = None
 
     def _execute_initialization(self):
-        self.__thread = Thread(target=self._loop)
+        self.__thread = Thread(target=self._loop, name="Thread-%s" % self.__class__.__name__)
 
     def _execute_start(self):
         self.__run = True

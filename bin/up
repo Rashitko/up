@@ -204,10 +204,10 @@ def main():
         if creator in HANDLER_CREATORS:
             name = args.name
             if args.file is None:
-                args.file = './commands/%s_command_handler.py' % to_snake_case(name)
+                args.file = './commands/%s_command.py' % to_snake_case(name)
             path = os.path.abspath(args.file)
             identifier = args.identifier
-            print("Using Command Handler Generator")
+            print("Using Command Generator")
             print("\t Name: %s" % name)
             print("\t Identifier: %s" % identifier)
             print("\t Path: %s" % path)
