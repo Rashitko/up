@@ -13,11 +13,13 @@ class BaseThreadModule(BaseStartedModule):
         self.__thread = Thread(target=self._loop, name="Thread-%s" % self.__class__.__name__)
 
     def _execute_start(self):
+        super._execute_start()
         self.__run = True
         self.__thread.start()
         return True
 
     def _execute_stop(self):
+        super._execute_stop()
         self.__run = False
 
     @abstractmethod
