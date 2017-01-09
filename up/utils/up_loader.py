@@ -74,7 +74,6 @@ class UpLoader:
         else:
             self.__logger.warning("FlightController not found")
             fc = None
-        self.__process_circuits(up_modules, self.__module_module_filter)
         return up_class(up_modules, up_recorders, fc)
 
     @staticmethod
@@ -168,27 +167,3 @@ class UpLoader:
             os.makedirs(modules_path)
             return None
         return modules_path
-
-    def __process_circuits(self, modules, filter):
-        circuits_root = os.path.join(os.getcwd(), 'circuits')
-        for dir in os.listdir(circuits_root):
-            if not dir.startswith('__'):
-                prefix = 'raspilot.circuits.' + dir
-                self.__process_circuit(os.path.join(circuits_root, dir), prefix, modules, filter)
-
-    def __process_circuit(self, dir, prefix, modules, module_filter):
-        prefix += '.circuit'
-        modules_path = os.path.join(dir, 'circuit', 'modules')
-        if os.path.isdir(modules_path):
-            modules_prefix = prefix + '.modules'
-            self.__load_modules(modules_prefix, modules_path, modules, module_filter, self.__load_strategy)
-
-        recorders_path = os.path.join(dir, 'circuit', 'recorders')
-        if os.path.isdir(recorders_path):
-            recorders_prefix = prefix + '.recorders'
-            recorders_module = importlib.import_module(recorders_prefix)
-
-        flight_controller_path = os.path.join(dir, 'circuit', 'flight_controller')
-        if os.path.isdir(flight_controller_path):
-            flight_controller_prefix = prefix + '.flight_controller'
-            fc_module = importlib.import_module(flight_controller_prefix)
