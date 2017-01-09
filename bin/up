@@ -5,8 +5,6 @@ import os
 import re
 from string import Template
 
-from up.upm import UpPackageManager
-
 GIT_URL = 'git+git://github.com/Rashitko/up'
 
 CREATOR = "create"
@@ -47,7 +45,6 @@ MODULES_CREATORS = [MODULE, MODULE_SHORT]
 NEW_APP_CREATORS = [NEW_APP, NEW_APP_SHORT]
 START_ACTIONS = [START, START_SHORT]
 UPDATE_ACTIONS = [UPDATE, UPDATE_SHORT]
-GATHER_ACTIONS = [GATHER, GATHER_SHORT]
 
 
 def create_command_handler(path, name, identifier):
@@ -195,7 +192,6 @@ def main():
     generate_parser = subparsers.add_parser(CREATOR, aliases=[CREATOR_SHORT])
     subparsers.add_parser(START, aliases=[START_SHORT])
     subparsers.add_parser(UPDATE, aliases=[UPDATE_SHORT])
-    subparsers.add_parser(GATHER, aliases=[GATHER_SHORT])
 
     l2_parsers = generate_parser.add_subparsers(title='Creators', help='available creators', dest='creator')
 
@@ -267,8 +263,6 @@ def main():
         os.system('PYTHONPATH=%s python3 %s' % (cwd, os.path.join(cwd, 'main.py')))
     elif action in UPDATE_ACTIONS:
         os.system('pip install --upgrade %s' % GIT_URL)
-    elif action in GATHER_ACTIONS:
-        manager = UpPackageManager()
     elif action is None:
         parser.print_help()
         exit(1)
