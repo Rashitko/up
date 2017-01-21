@@ -1,6 +1,9 @@
+import imp
 import importlib
 import inspect
 import os
+
+import yaml
 
 from up.base_module import BaseModule
 from up.base_system_state_recorder import BaseSystemStateRecorder
@@ -47,21 +50,37 @@ class UpLoader:
         :rtype: Up
         """
         self.__load_strategy = load_condition_class()
+
+        external_cogs = {}
         up_modules = []
+        up_recorders = []
+        flight_controllers = []
+
+        with open('external_modules.yml') as external_cogs_file:
+            external_cogs = yaml.load(external_cogs_file)
+        for cog, spec in external_cogs.items():
+            modules = spec['modules']
+            for cog_module in modules:
+                mod = importlib.import_module(cog_module['prefix'])
+                cls = getattr(mod, cog_module['class_name'])
+                globals()[cog_module['class_name']] = cls
+                up_modules.append(cls())
+        importlib.invalidate_caches()
+
         if self.__modules_path:
             modules_folder = self.__get_modules_folder()
             if not modules_folder:
                 return None
             self.__load_modules(self.__modules_prefix, modules_folder, up_modules,
                                 self.__module_module_filter, self.__load_strategy)
-        up_recorders = []
+        up_modules.sort(key=lambda x: x.load_order)
         if self.__recorders_path:
             recorders_folder = self.__get_recorders_folder()
             if not recorders_folder:
                 return None
             self.__load_modules(self.__recorders_prefix, recorders_folder, up_recorders,
                                 self.__recorders_filter, self.__load_strategy)
-        flight_controllers = []
+
         if self.__flight_controller_path:
             flight_controller_folder = self.__get_flight_controller_folder()
             self.__load_modules(self.__flight_controller_prefix, flight_controller_folder,
@@ -74,6 +93,7 @@ class UpLoader:
         else:
             self.__logger.warning("FlightController not found")
             fc = None
+
         return up_class(up_modules, up_recorders, fc)
 
     @staticmethod

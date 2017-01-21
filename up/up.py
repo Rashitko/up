@@ -94,7 +94,7 @@ class Up:
 
     def get_module(self, module_class):
         for module in self.__modules:
-            if module.__class__ == module_class:
+            if module.__class__.__name__ == module_class.__name__:
                 return module
         for module in self.__started_modules:
             if module.__class__ == module_class:

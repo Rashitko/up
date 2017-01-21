@@ -10,6 +10,6 @@ setup(
     author='Michal Raska',
     author_email='michal.raska@gmail.com',
     description='',
-    install_requires=['twisted', 'colorlog', 'psutil', 'pyyaml'],
+    install_requires=['twisted', 'colorlog', 'psutil', 'pyyaml', 'termcolor'],
     scripts=['bin/up']
 )

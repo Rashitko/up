@@ -8,6 +8,7 @@ class BaseModule(metaclass=ABCMeta):
         self.__silent = silent
         self.__logger = UpLogger.get_logger()
         self.__up = None
+        self.__load_order = 0
 
     def initialize(self, up):
         self.__up = up
@@ -43,6 +44,22 @@ class BaseModule(metaclass=ABCMeta):
 
     def load(self):
         return False
+
+    def is_a(self, cls):
+        print(cls)
+        return False
+
+    @property
+    def load_order(self):
+        return self.__load_order
+
+    @property
+    def _load_order(self):
+        return self.load_order
+
+    @_load_order.setter
+    def _load_order(self, value):
+        self.__load_order = value
 
     @property
     def logger(self):
