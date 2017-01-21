@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='up',
     version='0.5',
-    packages=['up', 'up.utils', 'up.commands', 'up.providers', 'up.flight_controller'],
+    packages=['up', 'up.utils', 'up.commands', 'up.providers', 'up.flight_controller', 'up.modules'],
     url='',
     license='',
     author='Michal Raska',

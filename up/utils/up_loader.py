@@ -63,7 +63,6 @@ class UpLoader:
             for cog_module in modules:
                 mod = importlib.import_module(cog_module['prefix'])
                 cls = getattr(mod, cog_module['class_name'])
-                globals()[cog_module['class_name']] = cls
                 up_modules.append(cls())
         importlib.invalidate_caches()
 
@@ -73,7 +72,8 @@ class UpLoader:
                 return None
             self.__load_modules(self.__modules_prefix, modules_folder, up_modules,
                                 self.__module_module_filter, self.__load_strategy)
-        up_modules.sort(key=lambda x: x.load_order)
+        up_modules.sort(key=lambda x: x.LOAD_ORDER)
+
         if self.__recorders_path:
             recorders_folder = self.__get_recorders_folder()
             if not recorders_folder:

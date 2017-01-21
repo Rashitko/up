@@ -4,11 +4,13 @@ from up.utils.up_logger import UpLogger
 
 
 class BaseModule(metaclass=ABCMeta):
+
+    LOAD_ORDER = 0
+
     def __init__(self, silent=False):
         self.__silent = silent
         self.__logger = UpLogger.get_logger()
         self.__up = None
-        self.__load_order = 0
 
     def initialize(self, up):
         self.__up = up
@@ -45,21 +47,8 @@ class BaseModule(metaclass=ABCMeta):
     def load(self):
         return False
 
-    def is_a(self, cls):
-        print(cls)
-        return False
-
-    @property
-    def load_order(self):
-        return self.__load_order
-
-    @property
-    def _load_order(self):
-        return self.load_order
-
-    @_load_order.setter
-    def _load_order(self, value):
-        self.__load_order = value
+    def is_a(self, module_name):
+        return self.__class__.__name__ == module_name
 
     @property
     def logger(self):

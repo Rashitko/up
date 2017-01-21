@@ -92,12 +92,9 @@ class Up:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
 
-    def get_module(self, module_class):
+    def get_module(self, module_name):
         for module in self.__modules:
-            if module.__class__.__name__ == module_class.__name__:
-                return module
-        for module in self.__started_modules:
-            if module.__class__ == module_class:
+            if module.is_a(module_name):
                 return module
         return None
 
