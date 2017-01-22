@@ -1,4 +1,4 @@
-from up.commands.altitude_command import AltitudeCommand, AltitudeCommandHandler
+from up.commands.altitude_command import AltitudeCommand, AltitudeCommandHandler, AltitudeCommandFactory
 from up.base_started_module import BaseStartedModule
 
 
@@ -20,9 +20,7 @@ class BaseAltitudeProvider(BaseStartedModule):
         self.up.command_executor.unregister_command(AltitudeCommand.NAME, self.__altitude_change_handle)
 
     def _on_altitude_changed(self, new_alt):
-        cmd = AltitudeCommand()
-        cmd.data = {'altitude': new_alt}
-        self.up.command_executor.execute_command(cmd)
+        self.up.command_executor.execute_command(AltitudeCommandFactory.create(new_alt))
 
     @property
     def altitude(self):

@@ -1,5 +1,5 @@
-from up.commands.heading_command import HeadingCommand, HeadingCommandHandler
 from up.base_started_module import BaseStartedModule
+from up.commands.heading_command import HeadingCommand, HeadingCommandHandler, HeadingCommandFactory
 
 
 class BaseHeadingProvider(BaseStartedModule):
@@ -19,14 +19,12 @@ class BaseHeadingProvider(BaseStartedModule):
         pass
 
     def _on_actual_heading_changed(self, new_actual_heading):
-        cmd = HeadingCommand()
-        cmd.data = {'mode': HeadingCommand.SET_MODE_ACTUAL, 'heading': new_actual_heading}
-        self.up.command_executor.execute_command(cmd)
+        self.up.command_executor.execute_command(
+            HeadingCommandFactory.create(new_actual_heading, HeadingCommand.SET_MODE_ACTUAL))
 
     def _on_required_heading_changed(self, new_required_heading):
-        cmd = HeadingCommand()
-        cmd.data = {'mode': HeadingCommand.SET_MODE_REQUIRED, 'heading': new_required_heading}
-        self.up.command_executor.execute_command(cmd)
+        self.up.command_executor.execute_command(
+            HeadingCommandFactory.create(new_required_heading, HeadingCommand.SET_MODE_REQUIRED))
 
     def load(self):
         return True
