@@ -5,6 +5,8 @@ import os
 import re
 from string import Template
 
+from up.package_manager import UpPackageManager
+
 GIT_URL = 'git+git://github.com/Rashitko/up'
 
 CREATOR = "create"
@@ -29,6 +31,11 @@ UPDATE_SHORT = 'u'
 GATHER = 'gather'
 GATHER_SHORT = 'g'
 
+COG = 'cog'
+
+REGISTER = 'register'
+REGISTER_SHORT = 'r'
+
 NAME_SWITCH = '-n'
 NAME_LONG_SWITCH = '--name'
 
@@ -45,6 +52,9 @@ MODULES_CREATORS = [MODULE, MODULE_SHORT]
 NEW_APP_CREATORS = [NEW_APP, NEW_APP_SHORT]
 START_ACTIONS = [START, START_SHORT]
 UPDATE_ACTIONS = [UPDATE, UPDATE_SHORT]
+GATHER_ACTIONS = [GATHER, GATHER_SHORT]
+REGISTER_ACTIONS = [REGISTER, REGISTER_SHORT]
+COG_ACTIONS = [COG]
 
 
 def create_command_handler(path, name, identifier):
@@ -99,7 +109,8 @@ class ${name}Module(Base${module_type_cap}Module):
     def load(self):
         return True
 """
-    source = Template(source_template).substitute(name=name, module_type=module_type, module_type_cap=module_type.capitalize())
+    source = Template(source_template).substitute(name=name, module_type=module_type,
+                                                  module_type_cap=module_type.capitalize())
     f = open(path, 'w+')
     f.write(source)
     f.close()
@@ -192,6 +203,8 @@ def main():
     generate_parser = subparsers.add_parser(CREATOR, aliases=[CREATOR_SHORT])
     subparsers.add_parser(START, aliases=[START_SHORT])
     subparsers.add_parser(UPDATE, aliases=[UPDATE_SHORT])
+    subparsers.add_parser(GATHER, aliases=[GATHER_SHORT])
+    register_parser = subparsers.add_parser(REGISTER, aliases=[REGISTER_SHORT])
 
     l2_parsers = generate_parser.add_subparsers(title='Creators', help='available creators', dest='creator')
 
@@ -206,6 +219,10 @@ def main():
 
     new_app_parser = l2_parsers.add_parser(NEW_APP, aliases=[NEW_APP_SHORT])
     new_app_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+
+    # register_parsers = register_parser.add_subparsers(title='Register', help='register an installed cog', dest='register')
+    register_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+
 
     args = parser.parse_args()
     action = args.action
@@ -263,6 +280,12 @@ def main():
         os.system('PYTHONPATH=%s python3 %s' % (cwd, os.path.join(cwd, 'main.py')))
     elif action in UPDATE_ACTIONS:
         os.system('pip install --upgrade %s' % GIT_URL)
+    elif action in GATHER_ACTIONS:
+        upm = UpPackageManager()
+        upm.load()
+    elif action in REGISTER_ACTIONS:
+        upm = UpPackageManager()
+        upm.register(args.name)
     elif action is None:
         parser.print_help()
         exit(1)

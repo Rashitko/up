@@ -10,15 +10,17 @@ class BaseLocationProvider(BaseStartedModule):
         self.__location_change_handle = None
 
     def _execute_start(self):
+        super()._execute_start()
         self.__location_change_handle = self.up.command_executor.register_command(LocationCommand.NAME,
                                                                                   LocationCommandHandler(self))
         return True
 
     def _execute_stop(self):
+        super()._execute_stop()
         self.up.command_executor.unregister_command(LocationCommand.NAME, self.__location_change_handle)
 
     def _on_location_changed(self, lat, lon):
-        self.up.command_executor.execute_command(LocationCommandFactory.create(lat, lon))
+        pass
 
     @property
     def latitude(self):

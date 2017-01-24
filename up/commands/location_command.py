@@ -4,8 +4,8 @@ from up.commands.command import BaseCommand, BaseCommandHandler
 class LocationCommand(BaseCommand):
     NAME = 'up.location.change'
 
-    LAT_KEY = 'lat'
-    LON_KEY = 'lon'
+    LAT_KEY = 'latitude'
+    LON_KEY = 'longitude'
 
     def __init__(self):
         super().__init__(LocationCommand.NAME)

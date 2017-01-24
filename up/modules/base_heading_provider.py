@@ -19,12 +19,10 @@ class BaseHeadingProvider(BaseStartedModule):
         pass
 
     def _on_actual_heading_changed(self, new_actual_heading):
-        self.up.command_executor.execute_command(
-            HeadingCommandFactory.create(new_actual_heading, HeadingCommand.SET_MODE_ACTUAL))
+        pass
 
     def _on_required_heading_changed(self, new_required_heading):
-        self.up.command_executor.execute_command(
-            HeadingCommandFactory.create(new_required_heading, HeadingCommand.SET_MODE_REQUIRED))
+        pass
 
     def load(self):
         return True

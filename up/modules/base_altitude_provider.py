@@ -20,7 +20,7 @@ class BaseAltitudeProvider(BaseStartedModule):
         self.up.command_executor.unregister_command(AltitudeCommand.NAME, self.__altitude_change_handle)
 
     def _on_altitude_changed(self, new_alt):
-        self.up.command_executor.execute_command(AltitudeCommandFactory.create(new_alt))
+        pass
 
     @property
     def altitude(self):
