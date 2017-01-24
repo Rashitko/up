@@ -7,6 +7,13 @@ from string import Template
 
 from up.package_manager import UpPackageManager
 
+CONFIG_DIR_NAME = 'config'
+LOGS_DIR_NAME = 'logs'
+FLIGHT_CONTROLLER_DIR_NAME = 'flight_controller'
+RECORDERS_DIR_NAME = 'recorders'
+COMMANDS_DIR_NAME = 'commands'
+MODULES_DIR_NAME = 'modules'
+
 GIT_URL = 'git+git://github.com/Rashitko/up'
 
 CREATOR = "create"
@@ -50,6 +57,7 @@ IDENTIFIER_LONG_SWITCH = '--identifier'
 HANDLER_CREATORS = [HANDLER, HANDLER_SHORT]
 MODULES_CREATORS = [MODULE, MODULE_SHORT]
 NEW_APP_CREATORS = [NEW_APP, NEW_APP_SHORT]
+COG_CREATORS = [COG]
 START_ACTIONS = [START, START_SHORT]
 UPDATE_ACTIONS = [UPDATE, UPDATE_SHORT]
 GATHER_ACTIONS = [GATHER, GATHER_SHORT]
@@ -157,12 +165,12 @@ if __name__ == "__main__":
     f.close()
     touch(dest_dir, '__init__.py')
 
-    create_sub_dir(dest_dir, 'modules')
-    create_sub_dir(dest_dir, 'commands')
-    create_sub_dir(dest_dir, 'recorders')
-    create_sub_dir(dest_dir, 'flight_controller')
-    create_sub_dir(dest_dir, 'logs', create_init=False)
-    cfg_dir = create_sub_dir(dest_dir, 'config', create_init=False)
+    create_sub_dir(dest_dir, MODULES_DIR_NAME)
+    create_sub_dir(dest_dir, COMMANDS_DIR_NAME)
+    create_sub_dir(dest_dir, RECORDERS_DIR_NAME)
+    create_sub_dir(dest_dir, FLIGHT_CONTROLLER_DIR_NAME)
+    create_sub_dir(dest_dir, LOGS_DIR_NAME, create_init=False)
+    cfg_dir = create_sub_dir(dest_dir, CONFIG_DIR_NAME, create_init=False)
     global_cfg_path = touch(cfg_dir, 'config.cfg')
     f = open(global_cfg_path, 'w')
     f.write("""[DEFAULT]
@@ -175,6 +183,46 @@ LOG LEVEL = DEBUG
 """)
     f.close()
 
+
+def create_cog(name):
+    cwd = os.getcwd()
+    cog_name = '%s_cog' % to_snake_case(name)
+    dest_dir = os.path.join(cwd, cog_name)
+    print("Using Cog Generator")
+    print("\t Path: %s" % dest_dir)
+    # if os.path.isdir(dest_dir):
+    #     print("\t Dir already exists!")
+    #     return
+    # os.makedirs(dest_dir)
+    with open(os.path.join(dest_dir, '.gitignore'), 'w+') as gitignore:
+        gitignore.write("""\
+build
+%s.egg_info
+""" % (cog_name))
+    create_sub_dir(dest_dir, cog_name)
+    with open(os.path.join(dest_dir, cog_name, 'registrar.py'), 'w+') as registrar:
+        registrar.write("""\
+from up.registrar import UpRegistrar
+
+
+class Registrar(UpRegistrar):
+
+    NAME = '%s'
+
+    def __init__(self):
+        super().__init__(self.NAME)
+
+    def register(self):
+        external_modules = self._load_external_modules()
+        if external_modules is not None:
+            # register all your modules
+            self._write_external_modules()
+        return True
+
+""" % (cog_name))
+    create_sub_dir(os.path.join(dest_dir, cog_name), MODULES_DIR_NAME)
+    create_sub_dir(os.path.join(dest_dir, cog_name), COMMANDS_DIR_NAME)
+    create_sub_dir(os.path.join(dest_dir, cog_name), RECORDERS_DIR_NAME)
 
 def touch(dest, name):
     path = os.path.join(dest, name)
@@ -220,9 +268,10 @@ def main():
     new_app_parser = l2_parsers.add_parser(NEW_APP, aliases=[NEW_APP_SHORT])
     new_app_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
 
-    # register_parsers = register_parser.add_subparsers(title='Register', help='register an installed cog', dest='register')
-    register_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+    cog_parser = l2_parsers.add_parser(COG)
+    cog_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
 
+    register_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
 
     args = parser.parse_args()
     action = args.action
@@ -269,6 +318,9 @@ def main():
         elif creator in NEW_APP_CREATORS:
             name = args.name
             create_app(name)
+        elif creator in COG_CREATORS:
+            name = args.name
+            create_cog(name)
         else:
             generate_parser.print_help()
             exit(1)
