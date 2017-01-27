@@ -21,7 +21,7 @@ class UpLogger:
     def __initialize():
         configparser.ConfigParser()
         cfg = ConfigReader.instance().global_config
-        log_level = cfg['DEFAULT']['LOG LEVEL']
+        log_level = cfg.get('DEFAULT', 'LOG LEVEL', fallback='DEBUG')
         log_path = os.path.join(os.getcwd(), 'logs')
 
         logging.addLevelName(UpLogger.TRANSMISSION_LEVEL_NUM, "TRANSMISSION")

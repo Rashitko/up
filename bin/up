@@ -5,6 +5,9 @@ import os
 import re
 from string import Template
 
+import yaml
+
+from up.explorer import Explorer
 from up.package_manager import UpPackageManager
 
 CONFIG_DIR_NAME = 'config'
@@ -43,6 +46,9 @@ COG = 'cog'
 REGISTER = 'register'
 REGISTER_SHORT = 'r'
 
+EXPLORE = 'explore'
+EXPLORE_SHORT = 'e'
+
 NAME_SWITCH = '-n'
 NAME_LONG_SWITCH = '--name'
 
@@ -63,6 +69,7 @@ UPDATE_ACTIONS = [UPDATE, UPDATE_SHORT]
 GATHER_ACTIONS = [GATHER, GATHER_SHORT]
 REGISTER_ACTIONS = [REGISTER, REGISTER_SHORT]
 COG_ACTIONS = [COG]
+EXPLORE_ACTIONS = [EXPLORE, EXPLORE_SHORT]
 
 
 def create_command_handler(path, name, identifier):
@@ -224,6 +231,7 @@ class Registrar(UpRegistrar):
     create_sub_dir(os.path.join(dest_dir, cog_name), COMMANDS_DIR_NAME)
     create_sub_dir(os.path.join(dest_dir, cog_name), RECORDERS_DIR_NAME)
 
+
 def touch(dest, name):
     path = os.path.join(dest, name)
     open(path, 'w+').close()
@@ -253,6 +261,7 @@ def main():
     subparsers.add_parser(UPDATE, aliases=[UPDATE_SHORT])
     subparsers.add_parser(GATHER, aliases=[GATHER_SHORT])
     register_parser = subparsers.add_parser(REGISTER, aliases=[REGISTER_SHORT])
+    explore_parser = subparsers.add_parser(EXPLORE, aliases=[EXPLORE_SHORT])
 
     l2_parsers = generate_parser.add_subparsers(title='Creators', help='available creators', dest='creator')
 
@@ -272,6 +281,9 @@ def main():
     cog_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
 
     register_parser.add_argument(NAME_SWITCH, NAME_LONG_SWITCH, type=str, required=True)
+    explore_parser.add_argument(TYPE_SWITCH, TYPE_LONG_SWITCH, type=str, choices=['modules', 'recorders', 'all'],
+                                default='all')
+    explore_parser.add_argument('-w', '--write', action='store_true')
 
     args = parser.parse_args()
     action = args.action
@@ -338,6 +350,22 @@ def main():
     elif action in REGISTER_ACTIONS:
         upm = UpPackageManager()
         upm.register(args.name)
+    elif action in EXPLORE_ACTIONS:
+        explorer = Explorer()
+        if args.type == 'all':
+            registered_modules = {
+                'modules': explorer.explore_modules(),
+                'recorders': explorer.explore_recorders()
+            }
+            print('\tFound modules: %s' % ', '.join([module['class_name'] for module in registered_modules['modules']]))
+            print('\tFound recorders: %s' % ', '.join([recorder['class_name'] for recorder in registered_modules['recorders']]))
+            if args.write:
+                with open('registered_modules.yml', 'w+') as f:
+                    print('\tWriting found modules and recorders')
+                    yaml.dump(registered_modules, f)
+        else:
+            parser.print_help()
+            exit(1)
     elif action is None:
         parser.print_help()
         exit(1)

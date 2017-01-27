@@ -1,14 +1,12 @@
 from abc import abstractmethod
 
 from up.base_module import BaseModule
-from up.utils.up_logger import UpLogger
 
 
 class BaseStartedModule(BaseModule):
     def __init__(self, config=None, silent=False):
         super().__init__(silent)
         self.__config = config
-        self.__logger = UpLogger.get_logger()
         self.__started = False
 
     def start(self):

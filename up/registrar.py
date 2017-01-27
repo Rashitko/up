@@ -1,5 +1,7 @@
 import os
 from abc import ABCMeta, abstractmethod
+from pkg_resources import Requirement, resource_filename
+
 
 import yaml
 from termcolor import colored
@@ -38,8 +40,26 @@ class UpRegistrar(metaclass=ABCMeta):
                 self.__external_modules[self.__cog_name]['recorders'] = []
             return self.__external_modules
 
-    def _register_module(self, name, prefix):
+    def _register_modules_from_file(self, path=None):
+        if path is None:
+            path = resource_filename(Requirement.parse(self.__cog_name), '%s/registered_modules.yml' % self.__cog_name)
+            if not os.path.isfile(path):
+                self._print_error(
+                    'Cannot find the %s in cog distribution. You have to install external modules manually' % colored(
+                        'registered_modules.yml', 'blue'))
+                return False
+        external_modules = self._load_external_modules()
+        if external_modules is not None:
+            if external_modules is not None:
+                with open(path) as f:
+                    registered_modules = yaml.load(f)
+                    for mod in registered_modules['modules']:
+                        self._register_module(mod['class_name'], mod['prefix'])
+                self._write_external_modules()
+            return True
+        return False
 
+    def _register_module(self, name, prefix):
         entry = {'class_name': name, 'prefix': prefix}
         modules = self.__external_modules[self.__cog_name]['modules']
         if entry not in modules:
