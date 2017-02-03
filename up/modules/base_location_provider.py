@@ -1,5 +1,5 @@
 from up.base_started_module import BaseStartedModule
-from up.commands.location_command import LocationCommand, LocationCommandHandler, LocationCommandFactory
+from up.commands.location_command import LocationCommand, LocationCommandHandler
 
 
 class BaseLocationProvider(BaseStartedModule):
@@ -21,6 +21,18 @@ class BaseLocationProvider(BaseStartedModule):
 
     def _on_location_changed(self, lat, lon):
         pass
+
+    def load(self):
+        return True
+
+    @property
+    def telemetry_content(self):
+        return {
+            'location': {
+                'latitude': self.latitude,
+                'longitude': self.longitude
+            }
+        }
 
     @property
     def latitude(self):

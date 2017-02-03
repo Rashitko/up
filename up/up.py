@@ -4,12 +4,14 @@ from up.base_started_module import BaseStartedModule
 from up.commands.command_executor import CommandExecutor
 from up.commands.command_receiver import CommandReceiver
 from up.commands.stop_command import BaseStopCommand, BaseStopCommandHandler
+from up.modules.base_heading_provider import BaseHeadingProvider
+from up.modules.base_location_provider import BaseLocationProvider
+from up.modules.base_mission_control_provider import BaseMissionControlProvider
 from up.providers.base_rx_provider import BaseRXProvider
 from up.providers.black_box_controller import BaseBlackBoxStateRecorder, BlackBoxController
 from up.providers.load_guard_controller import LoadGuardController, BaseLoadGuardStateRecorder
-from up.providers.mission_control_provider import BaseMissionControlProvider
 from up.providers.orientation_provider import BaseOrientationProvider
-from up.providers.telemetry_controller import BaseTelemetryStateRecorder, TelemetryController
+from up.providers.telemetry_controller import TelemetryController
 from up.utils.up_logger import UpLogger
 
 
@@ -22,36 +24,19 @@ class Up:
         self.__orientation_provider = None
         self.__flight_control_provider = None
         self._rx_provider = None
+
+        self.__telemetry_controller = TelemetryController()
+        self.__modules.append(self.telemetry_controller)
+        self.__logger.debug("Telemetry Controller loaded")
+
+        self.__modules.append(BaseLocationProvider())
+        self.__modules.append(BaseHeadingProvider())
+
         for module in self.__modules:
             if issubclass(type(module), BaseStartedModule):
                 self.__started_modules.append(module)
-                self.__orientation_provider = module
-                self.__logger.debug("Orientation Provider loaded")
-            if issubclass(type(module), BaseMissionControlProvider):
-                self.__flight_control_provider = module
-                self.__logger.debug("Flight Control Provider loaded")
             if issubclass(type(module), LoadGuardController):
                 self.__logger.debug("Load Guard loaded")
-            if issubclass(type(module), BaseRXProvider):
-                self._rx_provider = module
-                self.__logger.debug("RX Provider loaded")
-        for recorder in recorders:
-            if issubclass(type(recorder), BaseTelemetryStateRecorder):
-                telemetry_controller = TelemetryController(recorder)
-                self.__telemetry_controller = telemetry_controller
-                self.__modules.append(telemetry_controller)
-                self.__started_modules.append(telemetry_controller)
-                self.__logger.debug("Telemetry Controller loaded")
-            if issubclass(type(recorder), BaseBlackBoxStateRecorder):
-                black_box_controller = BlackBoxController(recorder)
-                self.__modules.append(black_box_controller)
-                self.__started_modules.append(black_box_controller)
-                self.__logger.debug("Black Box Controller loaded")
-            if issubclass(type(recorder), BaseLoadGuardStateRecorder):
-                self.__load_guard_controller = LoadGuardController(recorder)
-                self.__modules.append(self.__load_guard_controller)
-                self.__started_modules.append(self.__load_guard_controller)
-                self.__logger.debug("Load Guard Controller loaded")
 
         self.__flight_controller = flight_controller
         if self.__flight_controller:
@@ -97,6 +82,10 @@ class Up:
             if module.is_a(module_name):
                 return module
         return None
+
+    @property
+    def _modules(self):
+        return self.__modules
 
     @property
     def command_receiver(self) -> CommandReceiver:

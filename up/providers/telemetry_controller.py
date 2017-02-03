@@ -1,38 +1,57 @@
 import time
 
-from up.base_system_state_recorder import BaseSystemStateRecorder
 from up.base_thread_module import BaseThreadModule
+from up.commands.telemetry_frequency_command import TelemetryFrequencyCommand, TelemetryFrequencyCommandHandler
 
 
 class TelemetryController(BaseThreadModule):
-    DEFAULT_DELAY = 0.1
+    DEFAULT_FREQUENCY = 0.1
 
-    def __init__(self, state_recorder):
+    def __init__(self):
         super().__init__()
-        self.__state_recorder = state_recorder
-        self.__delay = self.DEFAULT_DELAY
+        self.__frequency = self.DEFAULT_FREQUENCY
 
-    def initialize(self, up):
-        super().initialize(up)
-        self.__state_recorder.initialize(up)
+    def _execute_initialization(self):
+        super()._execute_initialization()
+        self.up.command_executor.register_command(TelemetryFrequencyCommand.NAME,
+                                                  TelemetryFrequencyCommandHandler(self))
 
     def _loop(self):
         while self._run:
             try:
-                self.__state_recorder.record_state()
+                telemetry_data = {}
+                for module in self.up._modules:
+                    module_content = module.telemetry_content
+                    self.__merge(telemetry_data, module_content)
             except Exception as e:
                 self.logger.critical("Telemetry transmission failed. Error was {}".format(e))
-            time.sleep(self.__delay)
+            time.sleep(self.__frequency)
+
+    @staticmethod
+    def __merge(first, second, path=None):
+        """Merges second into first"""
+        if second is None:
+            return first
+
+        if path is None:
+            path = []
+        for key in second:
+            if key in first:
+                if isinstance(first[key], dict) and isinstance(second[key], dict):
+                    TelemetryController.__merge(first[key], second[key], path + [str(key)])
+                elif first[key] == second[key]:
+                    pass  # both contains the same value
+                else:
+                    raise ValueError("Conflict at %s" % '.'.join(path + [str(key)]))
+            else:
+                first[key] = second[key]
+        return first
 
     @property
-    def delay(self):
-        return self.__delay
+    def frequency(self):
+        return self.__frequency
 
-    @delay.setter
-    def delay(self, value):
-        self.__delay = value
+    @frequency.setter
+    def frequency(self, value):
+        self.__frequency = value
         self.logger.debug('Telemetry frequency set to %ss' % value)
-
-
-class BaseTelemetryStateRecorder(BaseSystemStateRecorder):
-    pass

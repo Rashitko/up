@@ -5,14 +5,15 @@ from up.base_started_module import BaseStartedModule
 class BaseAltitudeProvider(BaseStartedModule):
     def __init__(self):
         super().__init__()
-        self.__altitude = 0
+        self.__altitude = None
         self.__arduino_provider = None
         self.__altitude_change_handle = None
         self.__altitude_change_handle = None
 
     def _execute_start(self):
         super()._execute_start()
-        self.__altitude_change_handle = self.up.command_executor.register_command(AltitudeCommand.NAME, AltitudeCommandHandler(self))
+        self.__altitude_change_handle = self.up.command_executor.register_command(AltitudeCommand.NAME,
+                                                                                  AltitudeCommandHandler(self))
         return True
 
     def _execute_stop(self):
@@ -21,6 +22,13 @@ class BaseAltitudeProvider(BaseStartedModule):
 
     def _on_altitude_changed(self, new_alt):
         pass
+
+    def load(self):
+        return True
+
+    @property
+    def telemetry_content(self):
+        return {'altitude': self.altitude}
 
     @property
     def altitude(self):

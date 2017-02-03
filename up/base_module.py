@@ -66,6 +66,10 @@ class BaseModule(metaclass=ABCMeta):
     def up(self):
         return self.__up
 
+    @property
+    def telemetry_content(self):
+        return None
+
     @classmethod
     def instance(cls, up):
         up.get_module(cls)
