@@ -1,5 +1,7 @@
+import traceback
 from abc import abstractmethod
 
+import sys
 from up.base_module import BaseModule
 
 
@@ -24,6 +26,7 @@ class BaseStartedModule(BaseModule):
             else:
                 self._log_error(message)
         except Exception as e:
+            traceback.print_exc(file=sys.stderr)
             self.logger.error("Error during the start of {} occurred. Error was {}".format(self.class_name, e))
         return self.__started
 

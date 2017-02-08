@@ -21,6 +21,8 @@ class BaseThreadModule(BaseStartedModule):
     def _execute_stop(self):
         super()._execute_stop()
         self.__run = False
+        self.__thread.join()
+        self.__thread = None
 
     @abstractmethod
     def _loop(self):
