@@ -1,3 +1,4 @@
+import sys
 import time
 
 from up.base_thread_module import BaseThreadModule
@@ -5,11 +6,20 @@ from up.commands.telemetry_frequency_command import TelemetryFrequencyCommand, T
 
 
 class TelemetryController(BaseThreadModule):
+    LOAD_ORDER = sys.maxsize
     DEFAULT_FREQUENCY = 0.1
 
     def __init__(self):
         super().__init__()
         self.__frequency = self.DEFAULT_FREQUENCY
+        self.__mission_control_provider = None
+
+    def _execute_start(self):
+        self.__mission_control_provider = self.up.get_module('MissionControlProvider')
+        if self.__mission_control_provider is None:
+            self.logger.error("Mission Control Provider not available")
+            return False
+        return super()._execute_start()
 
     def _execute_initialization(self):
         super()._execute_initialization()
@@ -23,6 +33,7 @@ class TelemetryController(BaseThreadModule):
                 for module in self.up._modules:
                     module_content = module.telemetry_content
                     self.__merge(telemetry_data, module_content)
+                self.__mission_control_provider.send_telemetry(telemetry_data)
             except Exception as e:
                 self.logger.critical("Telemetry transmission failed. Error was {}".format(e))
             time.sleep(self.__frequency)

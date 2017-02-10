@@ -15,7 +15,6 @@ class BaseCommand:
     def serialize(self):
         serialized_json = {'name': self.name, 'data': self.data, 'id': self.id}
         string_data = json.dumps(serialized_json)
-        string_data += '\n'
         return bytes(string_data, 'utf-8')
 
     @property
