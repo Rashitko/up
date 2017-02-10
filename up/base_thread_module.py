@@ -10,10 +10,11 @@ class BaseThreadModule(BaseStartedModule):
         self.__thread = None
 
     def _execute_initialization(self):
-        self.__thread = Thread(target=self._loop, name="Thread-%s" % self.__class__.__name__)
+        super()._execute_initialization()
 
     def _execute_start(self):
         super()._execute_start()
+        self.__thread = Thread(target=self._loop, name="Thread-%s" % self.__class__.__name__)
         self.__run = True
         self.__thread.start()
         return True
@@ -21,7 +22,8 @@ class BaseThreadModule(BaseStartedModule):
     def _execute_stop(self):
         super()._execute_stop()
         self.__run = False
-        self.__thread.join()
+        if self.__thread:
+            self.__thread.join()
         self.__thread = None
 
     @abstractmethod
