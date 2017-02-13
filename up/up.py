@@ -77,9 +77,9 @@ class Up:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
 
-    def get_module(self, module_name):
+    def get_module(self, module_class):
         for module in self.__modules:
-            if module.is_a(module_name):
+            if isinstance(module, module_class) or issubclass(module.__class__, module_class):
                 return module
         return None
 
