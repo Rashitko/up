@@ -7,6 +7,7 @@ class BaseLocationProvider(BaseStartedModule):
         super().__init__()
         self.__latitude = None
         self.__longitude = None
+        self.__altitude = None
         self.__distance_from_home = None
         self.__required_bearing = None
         self.__location_change_handle = None
@@ -33,7 +34,8 @@ class BaseLocationProvider(BaseStartedModule):
         return {
             'location': {
                 'latitude': self.latitude,
-                'longitude': self.longitude
+                'longitude': self.longitude,
+                'altitude': self.altitude
             }
         }
 
@@ -46,6 +48,10 @@ class BaseLocationProvider(BaseStartedModule):
         return self.__longitude
 
     @property
+    def altitude(self):
+        return self.__altitude
+
+    @property
     def location(self):
         return self.latitude, self.longitude
 
@@ -53,8 +59,9 @@ class BaseLocationProvider(BaseStartedModule):
     def location(self, value):
         self.__latitude = value[0]
         self.__longitude = value[1]
-        self.__distance_from_home = value[2]
-        self.required_bearing = value[3]
+        self.__altitude = value[2]
+        self.__distance_from_home = value[3]
+        self.required_bearing = value[4]
         self._on_location_changed()
 
     @property
