@@ -3,6 +3,7 @@ import time
 
 from up.base_thread_module import BaseThreadModule
 from up.commands.telemetry_frequency_command import TelemetryFrequencyCommand, TelemetryFrequencyCommandHandler
+from up.modules.base_mission_control_provider import BaseMissionControlProvider
 
 
 class TelemetryController(BaseThreadModule):
@@ -15,7 +16,7 @@ class TelemetryController(BaseThreadModule):
         self.__mission_control_provider = None
 
     def _execute_start(self):
-        self.__mission_control_provider = self.up.get_module('MissionControlProvider')
+        self.__mission_control_provider = self.up.get_module(BaseMissionControlProvider)
         if self.__mission_control_provider is None:
             self.logger.error("Mission Control Provider not available")
             return False
