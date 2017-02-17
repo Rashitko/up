@@ -66,4 +66,4 @@ class TelemetryController(BaseThreadModule):
     @frequency.setter
     def frequency(self, value):
         self.__frequency = value
-        self.logger.debug('Telemetry frequency set to %ss' % value)
+        self.logger.info('Telemetry frequency set to %ss' % value)
