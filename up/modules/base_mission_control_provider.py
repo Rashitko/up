@@ -7,8 +7,11 @@ from up.commands.telemetry_command import TelemetryCommand
 class BaseMissionControlProvider(BaseStartedModule):
     def send_telemetry(self, telemetry_data):
         cmd = TelemetryCommand(telemetry_data)
-        self._transmit_telemetry(cmd.serialize())
+        self._transmit_data(cmd.serialize())
+
+    def send_command(self, cmd):
+        self._transmit_data(cmd.serialize())
 
     @abstractmethod
-    def _transmit_telemetry(self, data):
+    def _transmit_data(self, data):
         pass

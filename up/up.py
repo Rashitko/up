@@ -23,6 +23,7 @@ class Up:
 
         self.__orientation_provider = None
         self.__flight_control_provider = None
+        self.__mission_control_provider = None
         self._rx_provider = None
 
         self.__telemetry_controller = TelemetryController()
@@ -37,6 +38,9 @@ class Up:
                 self.__started_modules.append(module)
             if issubclass(type(module), LoadGuardController):
                 self.__logger.debug("Load Guard loaded")
+            if issubclass(type(module), BaseMissionControlProvider) :
+                self.__logger.debug("Mission Control Provider loaded")
+                self.__mission_control_provider = module
 
         self.__flight_controller = flight_controller
         if self.__flight_controller:
@@ -114,3 +118,7 @@ class Up:
     @property
     def rx_provider(self) -> BaseRXProvider:
         return self._rx_provider
+
+    @property
+    def mission_control_provider(self) -> BaseMissionControlProvider:
+        return self.__mission_control_provider

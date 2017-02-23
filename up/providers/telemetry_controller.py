@@ -8,7 +8,7 @@ from up.modules.base_mission_control_provider import BaseMissionControlProvider
 
 class TelemetryController(BaseThreadModule):
     LOAD_ORDER = sys.maxsize
-    DEFAULT_FREQUENCY = 0.1
+    DEFAULT_FREQUENCY = 0.05
 
     def __init__(self):
         super().__init__()
