@@ -36,5 +36,5 @@ class CommandExecutor(BaseModule):
             if handlers:
                 for handler in handlers.values():
                     reactor.callFromThread(handler.run_action, command)
-            else:
+            elif not command.suppress_warnings:
                 self._log_warning("Unknown command {} received".format(command.name))

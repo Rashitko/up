@@ -17,6 +17,9 @@ class BaseCommand:
         string_data = json.dumps(serialized_json)
         return bytes(string_data, 'utf-8')
 
+    def suppress_warnings(self):
+        return False
+
     @property
     def name(self):
         return self.__name

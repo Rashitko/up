@@ -2,13 +2,15 @@ import sys
 import time
 
 from up.base_thread_module import BaseThreadModule
+from up.commands.telemetry_command import TelemetryCommand
 from up.commands.telemetry_frequency_command import TelemetryFrequencyCommand, TelemetryFrequencyCommandHandler
 from up.modules.base_mission_control_provider import BaseMissionControlProvider
 
 
 class TelemetryController(BaseThreadModule):
     LOAD_ORDER = sys.maxsize
-    DEFAULT_FREQUENCY = 0.05
+    DEFAULT_FREQUENCY = 50
+    S_TO_MS = 1000
 
     def __init__(self):
         super().__init__()
@@ -34,10 +36,11 @@ class TelemetryController(BaseThreadModule):
                 for module in self.up._modules:
                     module_content = module.telemetry_content
                     self.__merge(telemetry_data, module_content)
+                self.up.command_executor.execute_command(TelemetryCommand(telemetry_data))
                 self.__mission_control_provider.send_telemetry(telemetry_data)
             except Exception as e:
                 self.logger.critical("Telemetry transmission failed. Error was {}".format(e))
-            time.sleep(self.__frequency)
+            time.sleep(self.__frequency / self.S_TO_MS)
 
     @staticmethod
     def __merge(first, second, path=None):
@@ -66,4 +69,4 @@ class TelemetryController(BaseThreadModule):
     @frequency.setter
     def frequency(self, value):
         self.__frequency = value
-        self.logger.info('Telemetry frequency set to %ss' % value)
+        self.logger.info('Telemetry frequency set to %sms' % value)

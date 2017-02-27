@@ -6,3 +6,6 @@ class TelemetryCommand(BaseCommand):
 
     def __init__(self, telemetry):
         super().__init__(TelemetryCommand.NAME, telemetry)
+
+    def suppress_warnings(self):
+        return True
