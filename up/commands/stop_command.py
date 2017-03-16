@@ -5,7 +5,7 @@ from up.commands.command import BaseCommand, BaseCommandHandler
 
 
 class BaseStopCommand(BaseCommand):
-    NAME = "system.stop"
+    NAME = "up.system.stop"
 
     def __init__(self):
         super().__init__(BaseStopCommand.NAME)
@@ -15,4 +15,4 @@ class BaseStopCommand(BaseCommand):
 class BaseStopCommandHandler(BaseCommandHandler):
     def run_action(self, command):
         self.logger.info("Stop command received. Stopping Up")
-        os.kill(os.getpid(), signal.SIGINT)
+        os.kill(os.getpid(), signal.SIGTERM)

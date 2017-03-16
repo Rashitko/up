@@ -33,13 +33,16 @@ class LocationCommandHandler(BaseCommandHandler):
         data = command.data
         if data.get(LocationCommand.LAT_KEY, None) is not None and data.get(LocationCommand.LON_KEY,
                                                                             None) is not None and data.get(
-            LocationCommand.ALT_KEY) is not None and data.get(
             LocationCommand.DISTANCE_FROM_HOME_KEY) is not None and data.get(
             LocationCommand.REQUIRED_BEARING_KEY) is not None:
             self.callbacks.location = (
-                data[LocationCommand.LAT_KEY], data[LocationCommand.LON_KEY], data[LocationCommand.ALT_KEY],
+                data[LocationCommand.LAT_KEY],
+                data[LocationCommand.LON_KEY],
+                data.get(LocationCommand.ALT_KEY),
                 data[LocationCommand.DISTANCE_FROM_HOME_KEY],
                 data[LocationCommand.REQUIRED_BEARING_KEY])
+        else:
+            self.logger.warning("Invalid location data. Data were %s" % data)
 
     @property
     def callbacks(self):
