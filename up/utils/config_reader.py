@@ -8,7 +8,7 @@ from up.utils.singleton import Singleton
 
 class ConfigReader(metaclass=Singleton):
     CONFIG_DIR = os.path.join(os.getcwd(), 'config')
-    MODULES_CONFIG_PATH = os.path.join(CONFIG_DIR, 'modules.yml')
+    MODULES_CONFIG_PATH = os.path.join(CONFIG_DIR, 'disabled_modules.yml')
     GLOBAL_CONFIG_PATH = os.path.join(CONFIG_DIR, 'config.cfg')
 
     def __init__(self):
