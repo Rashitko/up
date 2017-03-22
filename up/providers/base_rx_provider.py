@@ -8,6 +8,10 @@ class BaseRXProvider(BaseStartedModule):
     def get_channels(self):
         pass
 
+    @abstractmethod
+    def set_channels(self, values):
+        pass
+
     @property
     def telemetry_content(self):
         return {
