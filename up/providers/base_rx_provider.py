@@ -8,5 +8,8 @@ class BaseRXProvider(BaseStartedModule):
     def get_channels(self):
         pass
 
-    def load(self):
-        return True
+    @property
+    def telemetry_content(self):
+        return {
+            'rx': self.get_channels()
+        }
