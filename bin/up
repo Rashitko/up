@@ -143,6 +143,7 @@ def create_app(name):
             if confirmation in ['c', 'n']:
                 exit(1)
     os.makedirs(dest_dir, exist_ok=True)
+    touch(dest_dir, "external_modules.yml")
     touch(dest_dir, 'UpFile')
     touch(dest_dir, 'main.py')
     source_template = """import os

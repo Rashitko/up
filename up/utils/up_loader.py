@@ -58,6 +58,8 @@ class UpLoader:
 
         with open('external_modules.yml') as external_cogs_file:
             external_cogs = yaml.load(external_cogs_file)
+            if external_cogs is None:
+                external_cogs = {}
         for cog, spec in external_cogs.items():
             modules = spec['modules']
             for cog_module in modules:
