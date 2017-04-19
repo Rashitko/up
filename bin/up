@@ -147,18 +147,10 @@ def create_app(name):
     touch(dest_dir, 'UpFile')
     touch(dest_dir, 'Cogfile.yml')
     touch(dest_dir, 'main.py')
-    source_template = """import os
-from up.utils.up_loader import UpLoader
+    source_template = """from up.utils.new_loader import NewUpLoader
 
 def main():
-  cwd = os.getcwd()
-  modules_path = os.path.join(cwd, 'modules')
-  recorders_path = os.path.join(cwd, 'recorders')
-  fc_path = os.path.join(cwd, 'flight_controller')
-  up = UpLoader(modules_path=modules_path, modules_prefix='modules',
-                recorders_path=recorders_path, recorders_prefix='recorders',
-                flight_controller_path=fc_path, flight_controller_prefix='flight_controller'
-                ).create()
+  up = NewUpLoader().create()
   try:
     up.initialize()
     up.run()
@@ -176,19 +168,17 @@ if __name__ == "__main__":
 
     create_sub_dir(dest_dir, MODULES_DIR_NAME)
     create_sub_dir(dest_dir, COMMANDS_DIR_NAME)
-    create_sub_dir(dest_dir, RECORDERS_DIR_NAME)
     create_sub_dir(dest_dir, FLIGHT_CONTROLLER_DIR_NAME)
     create_sub_dir(dest_dir, LOGS_DIR_NAME, create_init=False)
     cfg_dir = create_sub_dir(dest_dir, CONFIG_DIR_NAME, create_init=False)
-    global_cfg_path = touch(cfg_dir, 'config.cfg')
+    global_cfg_path = touch(cfg_dir, 'config.yml')
     f = open(global_cfg_path, 'w')
-    f.write("""[DEFAULT]
-LOG LEVEL = DEBUG
+    f.write("""log level: info # Possible values are DEBUG, INFO, WARNING, ERROR
 """)
     f.close()
-    modules_cfg_path = touch(cfg_dir, 'modules.cfg')
+    modules_cfg_path = touch(cfg_dir, 'disabled_modules.yml')
     f = open(modules_cfg_path, 'w')
-    f.write("""[DISABLED MODULES]
+    f.write("""disabled modules:
 """)
     f.close()
 
@@ -199,10 +189,10 @@ def create_cog(name):
     dest_dir = os.path.join(cwd, cog_name)
     print("Using Cog Generator")
     print("\t Path: %s" % dest_dir)
-    # if os.path.isdir(dest_dir):
-    #     print("\t Dir already exists!")
-    #     return
-    # os.makedirs(dest_dir)
+    if os.path.isdir(dest_dir):
+        print("\t Dir already exists!")
+        return
+    os.makedirs(dest_dir)
     with open(os.path.join(dest_dir, '.gitignore'), 'w+') as gitignore:
         gitignore.write("""\
 build

@@ -40,6 +40,8 @@ class NewUpLoader:
             return
         with open(path) as f:
             external_modules = yaml.load(f)
+            if external_modules is None:
+                external_modules = {}
             for name, spec in external_modules.items():
                 self.__logger.debug('Processing %s from external modules' % name)
                 for required_module in spec.get('modules', []):
