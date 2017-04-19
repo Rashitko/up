@@ -15,6 +15,9 @@ class UpPackageManager:
         with open(cog_file_path) as cog_file:
             print('Loading cogs from %s' % self.__print_info(cog_file_path))
             yaml_load = yaml.load(cog_file)
+            if yaml_load is None:
+                print(self.__print_warning("Cogfile.yml EMPTY!"))
+                yaml_load = {}
             for (cog, spec) in yaml_load.items():
                 print('Processing %s:' % self.__print_info(cog))
                 self.__validate_cog_spec(spec)

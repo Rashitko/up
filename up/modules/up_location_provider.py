@@ -2,7 +2,7 @@ from up.base_started_module import BaseStartedModule
 from up.commands.location_command import LocationCommand, LocationCommandHandler
 
 
-class BaseLocationProvider(BaseStartedModule):
+class UpLocationProvider(BaseStartedModule):
     def __init__(self):
         super().__init__()
         self.__latitude = None

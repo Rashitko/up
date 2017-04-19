@@ -4,14 +4,11 @@ from up.base_started_module import BaseStartedModule
 from up.commands.command_executor import CommandExecutor
 from up.commands.command_receiver import CommandReceiver
 from up.commands.stop_command import BaseStopCommand, BaseStopCommandHandler
-from up.modules.base_heading_provider import BaseHeadingProvider
-from up.modules.base_location_provider import BaseLocationProvider
+from up.modules.up_heading_provider import UpHeadingProvider
+from up.modules.up_location_provider import UpLocationProvider
 from up.modules.base_mission_control_provider import BaseMissionControlProvider
 from up.providers.base_rx_provider import BaseRXProvider
-from up.providers.black_box_controller import BaseBlackBoxStateRecorder, BlackBoxController
-from up.providers.load_guard_controller import LoadGuardController, BaseLoadGuardStateRecorder
-from up.providers.orientation_provider import BaseOrientationProvider
-from up.providers.telemetry_controller import TelemetryController
+from up.modules.telemetry_controller import TelemetryController
 from up.utils.up_logger import UpLogger
 
 
@@ -30,14 +27,12 @@ class Up:
         self.__modules.append(self.telemetry_controller)
         self.__logger.debug("Telemetry Controller loaded")
 
-        self.__modules.append(BaseLocationProvider())
-        self.__modules.append(BaseHeadingProvider())
+        self.__modules.append(UpLocationProvider())
+        self.__modules.append(UpHeadingProvider())
 
         for module in self.__modules:
             if issubclass(type(module), BaseStartedModule):
                 self.__started_modules.append(module)
-            if issubclass(type(module), LoadGuardController):
-                self.__logger.debug("Load Guard loaded")
             if issubclass(type(module), BaseMissionControlProvider) :
                 self.__logger.debug("Mission Control Provider loaded")
                 self.__mission_control_provider = module
@@ -100,16 +95,8 @@ class Up:
         return self.__command_executor
 
     @property
-    def orientation_provider(self) -> BaseOrientationProvider:
-        return self.__orientation_provider
-
-    @property
     def flight_control(self) -> BaseMissionControlProvider:
         return self.__flight_control_provider
-
-    @property
-    def load_guard_controller(self) -> LoadGuardController:
-        return self.__load_guard_controller
 
     @property
     def telemetry_controller(self) -> TelemetryController:

@@ -2,8 +2,11 @@ import importlib
 import os
 
 import yaml
-
 from up.explorer import Explorer
+from up.modules.up_altitude_provider import UpAltitudeProvider
+from up.modules.up_heading_provider import UpHeadingProvider
+from up.modules.up_location_provider import UpLocationProvider
+from up.modules.up_orientation_provider import UpOrientationProvider
 from up.up import Up
 from up.utils.base_module_load_strategy import BaseModuleLoadStrategy
 from up.utils.up_logger import UpLogger
@@ -11,7 +14,9 @@ from up.utils.up_logger import UpLogger
 
 class NewUpLoader:
     def __init__(self, load_strategy=BaseModuleLoadStrategy):
-        self.__modules = []
+        self.__modules = [
+            UpAltitudeProvider(), UpHeadingProvider(), UpLocationProvider(), UpOrientationProvider()
+        ]
         self.__recorders = []
         self.__flight_controller = None
         self.__logger = UpLogger.get_logger()

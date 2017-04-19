@@ -1,7 +1,7 @@
 from up.base_started_module import BaseStartedModule
 
 
-class BaseOrientationProvider(BaseStartedModule):
+class UpOrientationProvider(BaseStartedModule):
 
     ORIENTATION_PRECISION = 2
 

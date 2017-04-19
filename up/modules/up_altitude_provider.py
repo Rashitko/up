@@ -2,7 +2,7 @@ from up.commands.altitude_command import AltitudeCommand, AltitudeCommandHandler
 from up.base_started_module import BaseStartedModule
 
 
-class BaseAltitudeProvider(BaseStartedModule):
+class UpAltitudeProvider(BaseStartedModule):
     def __init__(self):
         super().__init__()
         self.__altitude = None

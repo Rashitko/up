@@ -2,7 +2,7 @@ from up.base_started_module import BaseStartedModule
 from up.commands.heading_command import HeadingCommand, HeadingCommandHandler, HeadingCommandFactory
 
 
-class BaseHeadingProvider(BaseStartedModule):
+class UpHeadingProvider(BaseStartedModule):
     def __init__(self):
         super().__init__()
         self.__actual_heading = None
