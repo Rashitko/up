@@ -23,7 +23,7 @@ class UpPackageManager:
                 self.__validate_cog_spec(spec)
                 if spec.get(SPEC_URL_KEY) is not None:
                     print('Loading %s' % self.__print_info(spec[SPEC_URL_KEY]))
-                    pip.main(['install', "git+%s" % spec[SPEC_URL_KEY]])
+                    pip.main(['install', "git+%s" % spec[SPEC_URL_KEY], "--process-dependency-links"])
                 elif spec.get(SPEC_PYPI_KEY) is not None:
                     pypi_name = spec[SPEC_PYPI_KEY]
                     if spec.get(SPEC_VERSION_KEY) is not None:
