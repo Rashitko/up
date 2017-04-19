@@ -13,7 +13,7 @@ from up.utils.up_logger import UpLogger
 
 
 class Up:
-    def __init__(self, modules, recorders, flight_controller=None):
+    def __init__(self, modules, flight_controller=None):
         self.__logger = UpLogger.get_logger()
         self.__modules = modules
         self.__started_modules = []
